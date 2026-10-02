@@ -1,6 +1,6 @@
-id=rmx3830_sim2_nvrestore
-name=RMX3830 NV Restore
+id=rmx3830_sim2_nvanalyzer
+name=RMX3830 NV Analyzer
 version=1.0.0
 versionCode=100
 author=KoroZzi
-description=Controlled NV restore from an existing RMX3830 backup.
+description=Read-only UMS9230 NV analyzer for locating current IMEI representations and comparing RMX3830 NV partitions.
