@@ -1,6 +1,6 @@
-id=rmx3830_sim2_nvbackup
-name=RMX3830 NV/IMEI Backup
+id=rmx3830_sim2_nvrestore
+name=RMX3830 NV Restore
 version=1.0.0
 versionCode=100
 author=KoroZzi
-description=Read-only NV backup for realme C51 RMX3830.
+description=Controlled NV restore from an existing RMX3830 backup.
