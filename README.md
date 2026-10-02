@@ -1,24 +1,21 @@
-# RMX3830 NV Restore
+# RMX3830 NV Analyzer
 
-Controlled restore module for realme C51 RMX3830.
+Read-only diagnostic Magisk module for realme C51 / RMX3830 / UMS9230.
 
-Restores the newest backup directory from `/sdcard/Download/RMX3830_NV_Backup/<timestamp>/`.
+This is the final diagnostic step before any IMEI repair attempt. It does not write, erase, restore, or patch any NV/modem partition.
 
-Partitions:
-- prodnv
-- l_fixnv1_a
-- l_fixnv1_b
-- l_fixnv2_a
-- l_fixnv2_b
+## What it checks
 
-Before writing, it creates a fresh rollback copy of all five current partitions.
+- current Android-exposed 15-digit telephony identifiers;
+- existence and SHA-256 of `prodnv`, `l_fixnv1/2`, and `l_runtimenv1/2`;
+- A/B and main/backup NV equality;
+- raw ASCII occurrence of the currently exposed IMEI;
+- raw NV text markers and partition headers.
 
-## Safety
+The report is written to:
 
-The module is blocked by default. To authorize a restore, create:
-`/sdcard/Download/RMX3830_NV_Backup/RESTORE_NOW`
-Then run the Magisk Action.
+`/sdcard/Download/RMX3830_NV_Analyzer/analysis_<timestamp>/report.txt`
 
-It verifies partition existence and exact image sizes before any write. If validation fails, it aborts without writing.
+The module is intentionally read-only. If the current IMEI is absent even from the raw representations, the next repair step must use the actual Unisoc NV record format rather than an arbitrary offset.
 
-**Important:** this restores the selected backup exactly. A backup made after an IMEI change contains that changed state; it is not a factory-IMEI repair image.
+Public UMS9230 tooling examples show IMEI values being read from `l_fixnv1`, while partition references identify `l_fixnv1` as the IMEI store and `l_fixnv2` / runtime NV as backup-related storage. The exact byte-level record format is firmware/device specific.
