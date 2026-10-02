@@ -1,35 +1,46 @@
 #!/system/bin/sh
-OUT="/sdcard/Download/RMX3830_NV_Backup"
-TS="$(date +%Y%m%d_%H%M%S)"
-DEST="$OUT/$TS"
-LOG="$DEST/backup.log"
-mkdir -p "$DEST" || exit 1
+set -eu
+ROOT="/sdcard/Download/RMX3830_NV_Backup"
+STAMP="$(date +%Y%m%d_%H%M%S)"
+SAFE="$ROOT/RESTORE_PREVIOUS_$STAMP"
+LOG="$ROOT/restore_$STAMP.log"
+mkdir -p "$ROOT" "$SAFE"
 exec >>"$LOG" 2>&1
-echo "=== RMX3830 NV BACKUP ==="
+echo "=== RMX3830 NV RESTORE ==="
 echo "Started: $(date)"
-echo "Model: $(getprop ro.product.model)"
-echo "Device: $(getprop ro.product.device)"
-echo "Board: $(getprop ro.product.board)"
-echo "Hardware: $(getprop ro.hardware)"
-backup_part() {
-  NAME="$1"
-  SRC="/dev/block/by-name/$NAME"
-  DST="$DEST/$NAME.img"
-  echo "--- $NAME ---"
-  [ -e "$SRC" ] || { echo "MISSING: $SRC"; return 1; }
-  echo "size=$(blockdev --getsize64 "$SRC" 2>/dev/null || echo unknown)"
-  dd if="$SRC" of="$DST" bs=4M || { rm -f "$DST"; return 1; }
-  sync
-  echo "sha256=$(sha256sum "$DST" 2>/dev/null | awk '{print $1}')"
+MARKER="$ROOT/RESTORE_NOW"
+if [ ! -f "$MARKER" ]; then
+  echo "ABORT: create $MARKER to explicitly authorize restore."
+  echo "No NV partition was written."
+  exit 2
+fi
+rm -f "$MARKER"
+LATEST="$(ls -1dt "$ROOT"/*/ 2>/dev/null | grep -v '/RESTORE_PREVIOUS_' | head -n 1 || true)"
+[ -n "$LATEST" ] || { echo "ABORT: no backup directory found."; exit 3; }
+echo "Backup: $LATEST"
+check_part() {
+  NAME="$1"; EXPECTED="$2"; SRC="$LATEST/$NAME.img"; DEV="/dev/block/by-name/$NAME"
+  [ -f "$SRC" ] || { echo "ABORT: missing $SRC"; exit 4; }
+  ACTUAL="$(stat -c %s "$SRC")"
+  [ "$ACTUAL" = "$EXPECTED" ] || { echo "ABORT: bad size for $NAME ($ACTUAL != $EXPECTED)"; exit 5; }
+  [ -e "$DEV" ] || { echo "ABORT: missing $DEV"; exit 6; }
 }
-OK=0
-FAIL=0
+check_part prodnv 67108864
+check_part l_fixnv1_a 2097152
+check_part l_fixnv1_b 2097152
+check_part l_fixnv2_a 2097152
+check_part l_fixnv2_b 2097152
+echo "--- Creating pre-restore rollback copies ---"
 for NAME in prodnv l_fixnv1_a l_fixnv1_b l_fixnv2_a l_fixnv2_b; do
-  if backup_part "$NAME"; then OK=$((OK+1)); else FAIL=$((FAIL+1)); fi
+  dd if="/dev/block/by-name/$NAME" of="$SAFE/$NAME.img" bs=4M
+  sync
 done
-echo "--- IMEI info (read-only) ---"
-dumpsys iphonesubinfo 2>&1 | grep -Ei 'imei|slot|phoneId|deviceId' || true
+echo "--- Restoring backup ---"
+for NAME in prodnv l_fixnv1_a l_fixnv1_b l_fixnv2_a l_fixnv2_b; do
+  dd if="$LATEST/$NAME.img" of="/dev/block/by-name/$NAME" bs=4M
+  sync
+done
 echo "Completed: $(date)"
-echo "Successful=$OK Failed=$FAIL"
-echo "Backup=$DEST"
-echo "READ-ONLY: no NV/modem partition was written."
+echo "Rollback copy: $SAFE"
+echo "Restored: $LATEST"
+echo "REBOOT REQUIRED."
