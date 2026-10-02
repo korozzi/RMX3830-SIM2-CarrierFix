@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/bin/sh
 set -eu
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 OUT="$ROOT/dist"
