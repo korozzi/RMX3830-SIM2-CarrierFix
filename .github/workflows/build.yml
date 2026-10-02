@@ -5,9 +5,8 @@ on:
     branches: [ main ]
     paths:
       - 'module.prop'
-      - 'post-fs-data.sh'
-      - 'service.sh'
-      - 'uninstall.sh'
+      - 'action.sh'
+      - 'README.md'
       - 'build.sh'
       - '.github/workflows/build.yml'
   workflow_dispatch:
@@ -27,12 +26,13 @@ jobs:
           ./build.sh
       - name: Validate ZIP
         run: |
-          ZIP="$(find dist -maxdepth 1 -name 'RMX3830_SIM2_CarrierFix_v*.zip' -print -quit)"
+          ZIP="$(find dist -maxdepth 1 -name 'RMX3830_NV_Backup_v*.zip' -print -quit)"
           test -n "$ZIP"
           unzip -t "$ZIP"
+          unzip -l "$ZIP"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: RMX3830-SIM2-CarrierFix-v2
-          path: dist/RMX3830_SIM2_CarrierFix_v*.zip
+          name: RMX3830-NV-Backup-v1.0.0
+          path: dist/RMX3830_NV_Backup_v*.zip
           if-no-files-found: error
