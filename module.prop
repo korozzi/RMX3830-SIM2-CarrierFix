@@ -1,6 +1,6 @@
 id=rmx3830_sim2_carrierfix
 name=RMX3830 SIM2 CarrierFix
-version=3.0.0
-versionCode=300
+version=3.1.0
+versionCode=310
 author=KoroZzi
 description=Independent SIM2 CarrierConfig recovery and radio-registration diagnostics for realme C51 RMX3830.
