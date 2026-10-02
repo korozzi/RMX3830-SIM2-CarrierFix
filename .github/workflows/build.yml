@@ -18,21 +18,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Build
         run: |
           chmod +x build.sh
           ./build.sh
       - name: Validate ZIP
         run: |
-          ZIP="$(find dist -maxdepth 1 -name 'RMX3830_NV_Restore_v*.zip' -print -quit)"
+          ZIP="$(find dist -maxdepth 1 -name 'RMX3830_NV_Analyzer_v*.zip' -print -quit)"
           test -n "$ZIP"
           unzip -t "$ZIP"
           unzip -l "$ZIP"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: RMX3830-NV-Restore-v1.0.0
-          path: dist/RMX3830_NV_Restore_v*.zip
+          name: RMX3830-NV-Analyzer-v1.0.0
+          path: dist/RMX3830_NV_Analyzer_v*.zip
           if-no-files-found: error
