@@ -1,0 +1,6 @@
+id=rmx3830_original_imei_test
+name=RMX3830 Original IMEI Test
+version=1.0.0
+versionCode=100
+author=KoroZzi
+description=Experimental Magisk property-layer test for restoring this device's original IMEI1/IMEI2 without writing modem NV.
