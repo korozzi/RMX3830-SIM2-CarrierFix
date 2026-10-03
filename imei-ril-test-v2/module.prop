@@ -1,0 +1,6 @@
+id=rmx3830_imei_ril_test
+name=RMX3830 IMEI RIL Access Test
+version=2.0.0
+versionCode=200
+author=KoroZzi
+description=Root-level RIL/Diag capability test for restoring this device's own IMEI without writing modem NV.
