@@ -1,0 +1,6 @@
+id=rmx3830_imei_cp_probe
+name=RMX3830 cp_diskserver Analyzer
+version=4.0.0
+versionCode=400
+author=korozzi
+description=Read-only analyzer of the stock cp_diskserver process and binary; does not access modem endpoints or NV partitions.
