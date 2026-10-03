@@ -1,0 +1,6 @@
+id=rmx3830_imei_ril_probe
+name=RMX3830 IMEI RIL Probe
+version=3.0.0
+versionCode=300
+author=KoroZzi
+description=Non-invasive root probe of Unisoc RIL modem NV channel ownership; no modem I/O and no NV writes.
