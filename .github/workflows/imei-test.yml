@@ -1,0 +1,36 @@
+name: Build RMX3830 Original IMEI Test
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'imei-restore-test/**'
+      - '.github/workflows/imei-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        working-directory: imei-restore-test
+        run: |
+          chmod +x build.sh
+          ./build.sh
+      - name: Validate ZIP
+        working-directory: imei-restore-test
+        run: |
+          ZIP="$(find dist -maxdepth 1 -name 'RMX3830_Original_IMEI_Test_v*.zip' -print -quit)"
+          test -n "$ZIP"
+          unzip -t "$ZIP"
+          unzip -l "$ZIP"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RMX3830-Original-IMEI-Test-v1.0.0
+          path: imei-restore-test/dist/RMX3830_Original_IMEI_Test_v*.zip
+          if-no-files-found: error
