@@ -16,3 +16,6 @@ After installing the module, reboot once. It applies the values during Magisk la
 Action logs are written to /sdcard/Download/RMX3830_Original_IMEI_Test/.
 
 No prodnv, l_fixnv*, runtimenv, deltanv, modem character device, or persistent property storage is written by v1.
+
+
+Build trigger update.
