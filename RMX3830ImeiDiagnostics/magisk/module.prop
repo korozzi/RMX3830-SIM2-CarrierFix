@@ -1,0 +1,6 @@
+id=rmx3830-imei-diagnostics
+name=RMX3830 IMEI Diagnostics
+version=1.0.0
+versionCode=1
+author=RMX3830 diagnostics
+description=Read-only modem, fixnv and telephony diagnostics for realme RMX3830
