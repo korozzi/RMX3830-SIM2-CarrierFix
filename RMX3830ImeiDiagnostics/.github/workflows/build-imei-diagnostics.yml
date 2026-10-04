@@ -1,0 +1,40 @@
+name: Build RMX3830 IMEI Diagnostics
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'RMX3830ImeiDiagnostics/**'
+      - '.github/workflows/build-imei-diagnostics.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Build LSPosed APK
+        working-directory: RMX3830ImeiDiagnostics/lsposed
+        run: gradle --no-daemon :app:assembleDebug
+      - name: Build Magisk ZIP
+        run: |
+          mkdir -p out/RMX3830_IMEI_Diagnostics
+          cp -r RMX3830ImeiDiagnostics/magisk/* out/RMX3830_IMEI_Diagnostics/
+          chmod 755 out/RMX3830_IMEI_Diagnostics/action.sh out/RMX3830_IMEI_Diagnostics/customize.sh
+          cd out/RMX3830_IMEI_Diagnostics
+          zip -r ../RMX3830_IMEI_Diagnostics-Magisk-v1.0.0.zip .
+      - name: Collect artifacts
+        run: |
+          mkdir -p out/package
+          cp RMX3830ImeiDiagnostics/lsposed/app/build/outputs/apk/debug/app-debug.apk out/package/RMX3830_IMEI_Diagnostics-LSPosed-v1.0.0.apk
+          cp out/RMX3830_IMEI_Diagnostics-Magisk-v1.0.0.zip out/package/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RMX3830-IMEI-Diagnostics-v1.0.0
+          path: out/package/*
