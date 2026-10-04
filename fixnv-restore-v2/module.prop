@@ -1,0 +1,6 @@
+id=rmx3830_fixnv_restore_v2
+name=RMX3830 Original fixnv Restore v2
+version=2.0.0
+versionCode=20000
+author=korozzi
+description=Restores existing verified l_fixnv A/B backups and checks for post-boot overwrite.
