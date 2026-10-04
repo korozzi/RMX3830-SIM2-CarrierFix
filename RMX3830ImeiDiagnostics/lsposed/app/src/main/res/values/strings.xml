@@ -1,0 +1,4 @@
+<resources>
+<string name="app_name">RMX3830 IMEI Diagnostics</string>
+<string name="app_description">Read-only telephony and IMEI call diagnostics for RMX3830</string>
+</resources>
