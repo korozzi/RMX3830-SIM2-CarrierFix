@@ -1,0 +1,6 @@
+id=rmx3830-factory-imei
+name=RMX3830 Factory IMEI Injector
+version=1.0.0
+versionCode=1
+author=RMX3830 restoration
+description=Device-locked factory IMEI property injector for realme RMX3830
